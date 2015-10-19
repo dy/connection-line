@@ -4,7 +4,7 @@ It does not make any sense as a model, it is just a renderer.
 
 [![npm install connection-line](https://nodei.co/npm/connection-line.png?mini=true)](https://npmjs.org/package/connection-line/)
 
-Use as custom element:
+Use as a custom element:
 
 `browserify -r connection-line -o bundle.js`
 
