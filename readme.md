@@ -6,7 +6,7 @@ It does not make any sense as a model, it is just a renderer.
 
 Use as a custom element:
 
-`browserify -r connection-line -o bundle.js`
+`$ browserify -r connection-line -o bundle.js`
 
 ```html
 <script src="./bundle.js"></script>
