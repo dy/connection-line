@@ -1,0 +1,74 @@
+<!doctype html>
+<meta charset="utf-8"/>
+
+<title>Connection-line tests</title>
+
+<style>
+body {
+	min-height: 800px;
+	margin: 0;
+}
+.a, .b, .c, .d {
+	width: 100px;
+	height: 100px;
+	outline: 1px solid lightgray;
+}
+.a {
+
+}
+.b {
+
+}
+.c {
+	position: relative;
+	top: 100px;
+	left: 100px;
+}
+.d {
+	position: absolute;
+	top: 0px;
+	left: 200px;
+}
+connection-line {
+	/*outline: 1px solid rgba(255,200,200,1);*/
+}
+</style>
+
+<script src="./bundle.js"></script>
+
+<link rel="import" href="."/>
+
+<div class="a">A</div>
+<div class="b">B</div>
+<div class="c">C
+	<div class="d">D</div>
+	<!-- <connection-line from=".a" to=".b"></connection-line> -->
+</div>
+
+<connection-line from=".b" to=".d"></connection-line>
+
+<!-- <connection-line from=".a" to=".a" from-direction="right" to-direction="bottom"></connection-line> -->
+
+<!-- <connection-line from="200, 200" to="250, 400"></connection-line> -->
+
+
+<script type="text/javascript">
+	var Draggy = require('draggy');
+	var Resizable = require('resizable');
+
+	var els = document.querySelectorAll('.a, .b, .c, .d');
+	var connectors = [].slice.call(document.querySelectorAll('connection-line'));
+
+	for (var i = 0; i < els.length; i++ ){
+		Draggy(els[i]).on('drag', function () {
+			connectors.forEach(function (connector) {
+				connector.update();
+			})
+		})
+		Resizable(els[i]).on('resize', function () {
+			connectors.forEach(function (connector) {
+				connector.update();
+			})
+		});
+	}
+</script>

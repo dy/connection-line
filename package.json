@@ -1,0 +1,36 @@
+{
+  "name": "connection-line",
+  "version": "1.0.0",
+  "description": "Connection line element for the DOM",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test",
+    "watch": "watchify -r ./index.js:connection-line -r draggy -r resizable -d -o ./bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dfcreative/connection-line"
+  },
+  "keywords": [
+    "connection",
+    "dom",
+    "svg",
+    "web-components",
+    "custom-element",
+    "graph"
+  ],
+  "author": "Deema Yvanow <dfcreative@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dfcreative/connection-line/issues"
+  },
+  "homepage": "https://github.com/dfcreative/connection-line",
+  "dependencies": {
+    "mucss": "^1.0.3",
+    "xtend": "^4.0.0"
+  },
+  "devDependencies": {
+    "draggy": "^1.4.0",
+    "resizable": "^1.0.4"
+  }
+}
