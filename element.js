@@ -1,8 +1,9 @@
 /**
- * Connector web-element
+ * <connection-line> custom element
  *
  * @module connector/element
  */
+
 
 var Connector = require('connection-line');
 
@@ -10,9 +11,6 @@ var Connector = require('connection-line');
 var ConnectorProto = Object.create(HTMLElement.prototype);
 
 
-/**
- * Create connector controller
- */
 ConnectorProto.createdCallback = function () {
 	this.connector = Connector({
 		element: this
@@ -22,21 +20,12 @@ ConnectorProto.createdCallback = function () {
 };
 
 
-/**
- * Update on being attached
- */
 ConnectorProto.attachedCallback = function () {
-	var self = this;
-	setTimeout(function () {
-	self.connector.update();
-
-	})
+	this.connector.update();
 };
 
 
-/**
- * Provide update method
- */
+/** Update wrapper, for convenience */
 ConnectorProto.update = function () {
 	this.connector.update();
 };
