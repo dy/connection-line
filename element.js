@@ -16,12 +16,20 @@ ConnectorProto.createdCallback = function () {
 		element: this
 	});
 
-	this.connector.update();
+	this.update();
+
+	var self = this;
+
+	if (document.readyState !== 'complete') {
+		document.addEventListener('readystatechange', function () {
+			self.update();
+		});
+	}
 };
 
 
 ConnectorProto.attachedCallback = function () {
-	this.connector.update();
+	this.update();
 };
 
 

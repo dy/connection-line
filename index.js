@@ -43,6 +43,7 @@ function Connector (properties) {
 
 	//create path
 	this.svg = document.createElementNS(this.ns, 'svg');
+	this.svg.style.display = 'block';
 	this.path = document.createElementNS(this.ns, 'path');
 	this.path.style.stroke = this.lineColor;
 	this.path.style.fill = 'transparent';
@@ -136,8 +137,6 @@ Connector.prototype.update = function () {
 	//set size so to fit distance
 	var size = [Math.abs(to[0] - from[0]), Math.abs(to[1] - from[1])];
 
-	this.element.style.width = size[0] + 'px';
-	this.element.style.height = size[1] + 'px';
 	this.svg.setAttribute('width', size[0]);
 	this.svg.setAttribute('height', size[1]);
 
