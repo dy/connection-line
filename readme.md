@@ -30,7 +30,12 @@ var connector = new Connector({
 	to: '.b',
 
 	//smoothness of a line, 0 - straight line, 1 - smooth line
-	curvature: 0.5
+	curvature: 0.5,
+
+	//symbols on the line start/end/center
+	lineEnd: '➜',
+	lineStart: '•',
+	lineMiddle: '✘'
 });
 
 document.body.appendChild(connector.element);

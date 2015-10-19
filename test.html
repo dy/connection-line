@@ -42,13 +42,13 @@ body {
 	<connection-line from=".a" to=".b"></connection-line>
 </div>
 
-<connection-line from=".b" to=".d"></connection-line>
+<connection-line from=".b" to=".d" line-end="" line-middle="✘"></connection-line>
 
 <connection-line from=".a" to=".a" from-direction="right" to-direction="bottom"></connection-line>
 
 <connection-line from="0, 0" to=".a"></connection-line>
 
-<connection-line from=".d" to=".c" from-direction="right" to-direction="bottom"></connection-line>
+<connection-line from=".d" to=".c" from-direction="right" to-direction="bottom" line-start=">"></connection-line>
 
 
 <script type="text/javascript">
@@ -64,10 +64,10 @@ body {
 				connector.update();
 			})
 		})
-		Resizable(els[i]).on('resize', function () {
-			connectors.forEach(function (connector) {
-				connector.update();
-			})
-		});
+		// Resizable(els[i]).on('resize', function () {
+		// 	connectors.forEach(function (connector) {
+		// 		connector.update();
+		// 	})
+		// });
 	}
 </script>

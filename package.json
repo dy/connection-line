@@ -28,6 +28,7 @@
   "homepage": "https://github.com/dfcreative/connection-line",
   "dependencies": {
     "mucss": "^1.0.3",
+    "mustring": "^1.0.0",
     "xtend": "^4.0.0"
   },
   "devDependencies": {

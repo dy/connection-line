@@ -1,8 +1,22 @@
 connection-line {
 	position: absolute;
+	pointer-events: none;
 }
 connection-line svg {
 	display: block;
-	min-width: 2px;
-	min-height: 2px;
+}
+.connection-line-end, .connection-line-start, .connection-line-mark {
+	position: absolute;
+	line-height: 20px;
+	text-align: center;
+	min-height: 20px;
+	min-width: 20px;
+	font-size: 20px;
+	transform-origin: center center;
+}
+.connection-line-end {
+}
+.connection-line-start {
+}
+.connection-line-mark {
 }
