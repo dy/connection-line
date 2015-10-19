@@ -38,12 +38,8 @@ function Connector (properties) {
 		this.element = document.createElement('connection-line');
 	}
 
-	//ensure element style
-	this.element.style.position = 'absolute';
-
 	//create path
 	this.svg = document.createElementNS(this.ns, 'svg');
-	this.svg.style.display = 'block';
 	this.path = document.createElementNS(this.ns, 'path');
 	this.path.style.stroke = this.lineColor;
 	this.path.style.fill = 'transparent';
@@ -87,7 +83,7 @@ Connector.prototype.lineColor = 'black';
  * 1 - smooth curve
  * 0 - straight line
  */
-Connector.prototype.curvature = 0.5;
+Connector.prototype.curvature = 1;
 
 
 /**
@@ -149,10 +145,10 @@ Connector.prototype.update = function () {
 	this.element.style.top = Math.min(to[1], from[1]) + 'px';
 
 	//form path
-	var c = [size[0]/2, size[1]/2];
+	var c = [size[0]/2 * this.curvature, size[1]/2 * this.curvature];
 	var path = 'M ' + (isRight ? 0 : size[0]) + ' ' + (isTop ? size[1] : 0) + ' ' +
-	'C ' + c[0] + ' ' + (isTop ? size[1] : 0) + ' ' +
-	c[0] + ' ' + (isTop ? 0 : size[1]) + ' ' +
+	'C ' + (isRight ? c[0] : size[0] - c[0]) + ' ' + (isTop ? size[1] : 0) + ' ' +
+	(isRight ? size[0] - c[0] : c[0]) + ' ' + (isTop ? 0 : size[1]) + ' ' +
 	(isRight ? size[0] : 0) + ' ' + (isTop ? 0 : size[1]);
 
 

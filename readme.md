@@ -27,7 +27,10 @@ var Connector = require('connection-line');
 var connector = new Connector({
 	//selector, element or array with relative coords
 	from: [0, 0],
-	to: '.b'
+	to: '.b',
+
+	//smoothness of a line, 0 - straight line, 1 - smooth line
+	curvature: 0.5
 });
 
 document.body.appendChild(connector.element);

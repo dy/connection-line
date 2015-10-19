@@ -1,0 +1,8 @@
+connection-line {
+	position: absolute;
+}
+connection-line svg {
+	display: block;
+	min-width: 2px;
+	min-height: 2px;
+}
