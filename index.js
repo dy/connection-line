@@ -1,5 +1,5 @@
 /**
- * Connector element
+ * Connection-line element controller
  *
  * @module connection-line
  */
@@ -9,9 +9,11 @@ var offset = require('mucss/offset');
 
 
 /**
+ * Create connection-line element controller
+ *
  * @constructor
  *
- * @param {Object} properties Init options
+ * @param {Object} properties Options to init
  */
 function Connector (properties) {
 	if (!(this instanceof Connector)) return new Connector(properties);
@@ -38,8 +40,6 @@ function Connector (properties) {
 
 	//ensure element style
 	this.element.style.position = 'absolute';
-	this.element.style.minWidth = '20px';
-	this.element.style.minHeight = '20px';
 
 	//create path
 	this.svg = document.createElementNS(this.ns, 'svg');
@@ -59,7 +59,7 @@ function Connector (properties) {
 /**
  * Preferred direction of connection.
  * horizontal, vertical or diagonal.
- * If undefined - it is picker automatically.
+ * If undefined - it is picked automatically.
  */
 Connector.prototype.orientation = 'horizontal';
 
@@ -124,7 +124,7 @@ Connector.prototype.modifier = '✔';
 
 
 /**
- * Update position of connection
+ * Update position, according to the selectors, if any
  */
 Connector.prototype.update = function () {
 	var self = this;
@@ -163,35 +163,32 @@ Connector.prototype.update = function () {
 
 	//return absolute offset for a target
 	function getCoords (target) {
-		var coords;
+		if (target instanceof Array) {
+			return target;
+		}
+
 		if (typeof target === 'string') {
 			//`100, 200` - coords relative to offsetParent
 			if ((coords = target.split(/\s*,\s*/)).length === 2) {
-				coords[0] = parseInt(coords[0]);
-				coords[1] = parseInt(coords[1]);
+				return [parseInt(coords[0]), parseInt(coords[1])];
 			}
-			//`.selector` - calc selected target coords relative to offset parent
-			else {
-				var target = document.querySelector(target);
-				if (!target) {
-					coords = [0, 0];
-				}
-				else {
-					var targetOffset = offset(target);
-					var parent = self.element.offsetParent || self.element.parentNode;
-					var parentOffset = offset(parent);
 
-					coords = [
-						targetOffset.left + targetOffset.width/2 - parentOffset.left,
-						targetOffset.top + targetOffset.height/2 - parentOffset.top
-					];
-				}
-			}
+			//`.selector` - calc selected target coords relative to offset parent
+			target = document.querySelector(target);
 		}
-		else if (target instanceof Array) {
-			coords = target;
+
+		if (!target) {
+			return [0, 0];
 		}
-		return coords;
+
+		var targetOffset = offset(target);
+		var parent = self.element.offsetParent || self.element.parentNode;
+		var parentOffset = offset(parent);
+
+		return [
+			targetOffset.left + targetOffset.width/2 - parentOffset.left,
+			targetOffset.top + targetOffset.height/2 - parentOffset.top
+		];
 	}
 };
 
