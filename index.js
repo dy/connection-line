@@ -70,14 +70,6 @@ function Connector (properties) {
 
 
 /**
- * Preferred direction of connection.
- * horizontal, vertical or diagonal.
- * If undefined - it is picked automatically.
- */
-Connector.prototype.orientation = 'horizontal';
-
-
-/**
  * Source/target element or coordinates
  */
 Connector.prototype.from = [0, 0];
@@ -95,7 +87,6 @@ Connector.prototype.lineMiddle = '';
 /**
  * Line style options
  */
-Connector.prototype.lineDash = '';
 Connector.prototype.lineWidth = 1;
 Connector.prototype.lineColor = 'black';
 
@@ -106,35 +97,6 @@ Connector.prototype.lineColor = 'black';
  * 0 - straight line
  */
 Connector.prototype.curvature = 1;
-
-
-/**
- * Number of sections to split the curve.
- * 0 - straight line.
- * 1 - one-angle smooth transition.
- * 2 - elbow-connector
- * 3 - ...
- */
-Connector.prototype.divisions = 1;
-
-
-/**
- * Number of parallel lines
- */
-Connector.prototype.channels = 1;
-
-
-/**
- * Display swapped channels, e. g. {0: 1, 1: 0}
- */
-Connector.prototype.swap = {};
-
-
-/**
- * Display title of a connector
- */
-Connector.prototype.title = '';
-
 
 
 /**
@@ -224,15 +186,6 @@ Connector.prototype.update = function () {
 		];
 	}
 };
-
-
-/**
- * Render frame, e.g. animation, physics of movement etc
- */
-Connector.prototype.render = function () {
-
-};
-
 
 
 module.exports = Connector;
