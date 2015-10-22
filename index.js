@@ -37,6 +37,7 @@ function Connector (properties) {
 
 	//ensure element
 	if (!this.element) {
+		//FIXME: this element may fail in IE etc
 		this.element = document.createElement('connection-line');
 	}
 
@@ -104,6 +105,9 @@ Connector.prototype.curvature = 1;
  */
 Connector.prototype.update = function () {
 	var self = this;
+
+	//no sense to update detached element
+	if (!this.element.parentNode) return;
 
 	//get target offsets
 	var from = getCoords(this.from);
