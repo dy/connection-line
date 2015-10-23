@@ -287,7 +287,7 @@ Connector.prototype.update = function () {
 	//return absolute offset for a target
 	function getOffset (target) {
 		if (target instanceof Array) {
-			return Rect(target[0], target[1], target[2], target[3]);
+			return Rect(target[0], target[1], target[2]||target[0], target[3]||target[1]);
 		}
 
 		if (typeof target === 'string') {
