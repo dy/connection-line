@@ -50,7 +50,6 @@ function Connector (properties) {
 	this.path.style.strokeWidth = this.lineWidth;
 
 	//create marks
-	//divs have no cursor:text, so use them, not spans
 	this.lineEndEl = document.createElement('div');
 	this.lineStartEl = document.createElement('div');
 	this.lineMiddleEl = document.createElement('div');

@@ -12,6 +12,7 @@ connection-line svg {
 	min-height: 20px;
 	min-width: 20px;
 	font-size: 20px;
+	cursor: default;
 }
 .connection-line-end {
 	transform-origin: center center;
