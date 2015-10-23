@@ -37,11 +37,11 @@ var connector = new Connector({
 	lineStart: '•',
 	lineMiddle: '✘',
 
-	//force initial directions, optionally
+	//force initial directions. By default the best one is chosen
 	fromDirection: 'top',
 	toDirection: 'bottom',
 
-	//padding around the targets to keep provide direction
+	//padding around the targets for initial direction
 	padding: 20
 });
 
