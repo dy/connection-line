@@ -1,6 +1,6 @@
 {
   "name": "connection-line",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Connection line element for the DOM",
   "main": "index.js",
   "scripts": {
