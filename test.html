@@ -5,8 +5,8 @@
 
 <style>
 body {
+	/*margin: 0;*/
 	min-height: 800px;
-	margin: 0;
 }
 .a, .b, .c, .d {
 	width: 40px;
@@ -17,7 +17,7 @@ body {
 
 }
 .b {
-
+	margin-top: 20px;
 }
 .c {
 	position: relative;
@@ -29,6 +29,9 @@ body {
 	top: 0px;
 	left: 200px;
 }
+connection-line{
+	/*outline: 1px solid red;*/
+}
 </style>
 
 <script src="./bundle.js"></script>
@@ -39,16 +42,16 @@ body {
 <div class="b">B</div>
 <div class="c">C
 	<div class="d">D</div>
-	<connection-line from=".a" to=".b"></connection-line>
+	<!-- <connection-line from=".a" to=".b"></connection-line> -->
 </div>
 
-<connection-line from=".b" to=".d" line-end="" line-middle="✘"></connection-line>
+<!-- <connection-line from=".b" to=".d" line-end="➤" line-middle="✘"></connection-line> -->
 
-<connection-line from=".a" to=".a" from-direction="right" to-direction="bottom"></connection-line>
+<!-- <connection-line from=".a" to=".a" from-direction="right" to-direction="bottom"></connection-line> -->
 
-<connection-line from="0, 0" to=".a"></connection-line>
+<!-- <connection-line from="0, 0" to=".a" to-direction="bottom"></connection-line> -->
 
-<connection-line from=".d" to=".c" from-direction="right" to-direction="bottom" line-start=">"></connection-line>
+<connection-line from=".d" to=".c" line-end=""></connection-line>
 
 
 <script type="text/javascript">

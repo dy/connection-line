@@ -30,12 +30,19 @@ var connector = new Connector({
 	to: '.b',
 
 	//smoothness of a line, 0 - straight line, 1 - smooth line
-	curvature: 0.5,
+	smoothness: 0.5,
 
 	//symbols on the line start/end/center
 	lineEnd: '➜',
 	lineStart: '•',
-	lineMiddle: '✘'
+	lineMiddle: '✘',
+
+	//force initial directions, optionally
+	fromDirection: 'top',
+	toDirection: 'bottom',
+
+	//padding around the targets to keep provide direction
+	padding: 20
 });
 
 document.body.appendChild(connector.element);

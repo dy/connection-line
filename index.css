@@ -12,11 +12,12 @@ connection-line svg {
 	min-height: 20px;
 	min-width: 20px;
 	font-size: 20px;
-	transform-origin: center center;
 }
 .connection-line-end {
+	transform-origin: center center;
 }
 .connection-line-start {
+	transform-origin: center center;
 }
 .connection-line-mark {
 }

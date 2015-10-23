@@ -7,6 +7,7 @@
 var extend = require('xtend/mutable');
 var offset = require('mucss/offset');
 var camel = require('mustring/camel');
+var Rect = require('mucss/rect');
 
 
 /**
@@ -97,7 +98,21 @@ Connector.prototype.lineColor = 'black';
  * 1 - smooth curve
  * 0 - straight line
  */
-Connector.prototype.curvature = 1;
+Connector.prototype.smoothness = 1;
+
+
+/**
+ * Padding - the area around the target
+ * to let connections with the opposite directions take place
+ */
+Connector.prototype.padding = 20;
+
+
+/**
+ * Initial directions, by default undefined
+ */
+Connector.prototype.fromDirection;
+Connector.prototype.toDirection;
 
 
 /**
@@ -110,66 +125,175 @@ Connector.prototype.update = function () {
 	if (!this.element.parentNode) return;
 
 	//get target offsets
-	var from = getCoords(this.from);
-	var to = getCoords(this.to);
+	var from = getOffset(this.from);
+	var to = getOffset(this.to);
 
-	//set size so to fit distance
-	var size = [Math.abs(to[0] - from[0]), Math.abs(to[1] - from[1])];
 
-	this.svg.setAttribute('width', Math.max(size[0], this.lineWidth));
-	this.svg.setAttribute('height', Math.max(size[1], this.lineWidth));
+	//absolute size rect, covering both from and to
+	//FIXME: add margins
+	var size = Rect(
+		Math.min(to.left, from.left) - this.padding,
+		Math.min(to.top, from.top) - this.padding,
+		Math.max(to.right, from.right) + this.padding,
+		Math.max(to.bottom, from.bottom) + this.padding
+	);
 
-	//detect h/v directions
-	var isTop = to[1] < from[1];
-	var isRight = to[0] > from[0];
+	//FIXME: set z-index lower than the both targets
 
-	//correct target offset
-	this.element.style.left = Math.min(to[0], from[0]) + 'px';
-	this.element.style.top = Math.min(to[1], from[1]) + 'px';
+	//ensure element size
+	this.svg.setAttribute('width', Math.max(size.width, this.lineWidth));
+	this.svg.setAttribute('height', Math.max(size.height, this.lineWidth));
+
+	//calculate needed parent offsets
+	var parentOffset = Rect();
+	if (this.element.offsetParent && (this.element.offsetParent !== document.body) && this.element.offsetParent !== document.documentElement) {
+		parentOffset = offset(this.element.offsetParent);
+	}
+
+	//place self so to fit space between source and target
+	this.element.style.top = size.top - parentOffset.top + 'px';
+	this.element.style.left = size.left - parentOffset.left + 'px';
+
+	//centers of masses - relative coords
+	var fromCenter = [
+		from.left + from.width/2 - size.left,
+		from.top + from.height/2 - size.top
+	];
+	var toCenter = [
+		to.left + to.width/2 - size.left,
+		to.top + to.height/2 - size.top
+	];
+
+	//detect dominant direction vector based on centers of masses
+	var mainV = [
+		toCenter[0] - fromCenter[0],
+		toCenter[1] - fromCenter[1]
+	];
+
+	var angle = Math.atan2(-mainV[1], mainV[0]);
+	var Pi = Math.PI;
+	if (angle < 0) {
+		angle += Pi*2;
+	}
+
+	//if initial directions are not specified - detect based on angle
+	var fromDirection = this.fromDirection || (
+		angle < Pi/4 ? 'right' :
+		angle < 3*Pi/4 ? 'top' :
+		angle < 5*Pi/4 ? 'left' :
+		angle < 7*Pi/4 ? 'bottom' : 'right');
+	var toDirection = this.toDirection || (
+		angle < Pi/4 ? 'left' :
+		angle < 3*Pi/4 ? 'bottom' :
+		angle < 5*Pi/4 ? 'right' :
+		angle < 7*Pi/4 ? 'top' : 'left');
+
+	//calculate start/end points from base directions
+	//express in relative coords
+	var start0 = getDirectionCoords(fromDirection, from, size);
+	var end0 = getDirectionCoords(toDirection, to, size);
+	var center = [
+		(end0[0] + start0[0]) / 2,
+		(end0[1] + start0[1]) / 2
+	];
+
+	//direction coefs
+	var dirCoef = {
+		top: -1,
+		bottom: 1,
+		left: -1,
+		right: 1
+	};
+
+	//form path from 3-parts (most difficult case)
+	//at first align initial directions around the targets
+	//then - draw through the central point
+	var start1 = [
+		toUnit(start0[0] - fromCenter[0]) * this.padding + start0[0],
+		toUnit(start0[1] - fromCenter[1]) * this.padding + start0[1]
+	];
+	var end1 = [
+		toUnit(end0[0] - toCenter[0]) * this.padding + end0[0],
+		toUnit(end0[1] - toCenter[1]) * this.padding + end0[1]
+	];
+
+	//if in/out directions are over the corner - ensure that corner
+	var start2;
 
 	//form path
-	var c = [size[0]/2 * this.curvature, size[1]/2 * this.curvature];
-	var path = 'M ' + (isRight ? 0 : size[0]) + ' ' + (isTop ? size[1] : 0) + ' ' +
-	'C ' + (isRight ? c[0] : size[0] - c[0]) + ' ' + (isTop ? size[1] : 0) + ' ' +
-	(isRight ? size[0] - c[0] : c[0]) + ' ' + (isTop ? 0 : size[1]) + ' ' +
-	(isRight ? size[0] : 0) + ' ' + (isTop ? 0 : size[1]);
+	var path = 'M ' + start0[0] + ' ' + start0[1] + ' ' +
+	'C ' + start1[0] + ' ' + start1[1] + ' ' +
+	end1[0] + ' ' + end1[1] + ' ' +
+	end0[0] + ' ' + end0[1];
 
 	//set path coords
 	this.path.setAttribute('d', path);
 
 	//correct position of marks
+
 	var leSize = [this.lineEndEl.clientWidth, this.lineEndEl.clientHeight];
 	var lsSize = [this.lineStartEl.clientWidth, this.lineStartEl.clientHeight];
 	var lmSize = [this.lineMiddleEl.clientWidth, this.lineMiddleEl.clientHeight];
-	this.lineEndEl.style.top = (isTop ? 0 : size[1]) - leSize[1]/2 + 'px';
-	this.lineEndEl.style.left = (isRight ? size[0] : 0) - leSize[0]/2 + 'px';
-	this.lineStartEl.style.top = (isTop ? size[1] : 0) - lsSize[1]/2 + 'px';
-	this.lineStartEl.style.left = (isRight ? 0 : size[0]) - lsSize[0]/2 + 'px';
-	this.lineMiddleEl.style.top = size[1]/2 - lmSize[1]/2 + 'px';
-	this.lineMiddleEl.style.left = size[0]/2 - lmSize[0]/2 + 'px';
+	this.lineEndEl.style.left = end0[0] - leSize[0]/2 + 'px';
+	this.lineEndEl.style.top = end0[1] - leSize[1]/2 + 'px';
+	this.lineStartEl.style.left = start0[0] - lsSize[0]/2 + 'px';
+	this.lineStartEl.style.top = start0[1] - lsSize[1]/2 + 'px';
+	this.lineMiddleEl.style.left = center[0] - lmSize[0]/2 + 'px';
+	this.lineMiddleEl.style.top = center[1] - lmSize[1]/2 + 'px';
 
 	//rotate the marks properly
 	var len = this.path.getTotalLength();
 	var start = this.path.getPointAtLength(0);
-	var start1 = this.path.getPointAtLength(lsSize[0]/2);
+	var startNext = this.path.getPointAtLength(lsSize[0]/2);
 	var end = this.path.getPointAtLength(len);
-	var end1 = this.path.getPointAtLength(len-leSize[0]/2);
-	var startAngle = Math.atan2(start1.y - start.y, start1.x - start.x);
-	var endAngle = Math.atan2(-end1.y + end.y, -end1.x + end.x);
+	var endNext = this.path.getPointAtLength(len-leSize[0]/2);
+	var startAngle = Math.atan2(startNext.y - start.y, startNext.x - start.x);
+	var endAngle = Math.atan2(-endNext.y + end.y, -endNext.x + end.x);
 	this.lineEndEl.style.transform = 'rotate(' + endAngle.toFixed(2) + 'rad)';
 	this.lineStartEl.style.transform = 'rotate(' + startAngle.toFixed(2) + 'rad)';
 
 
+	//map diff to a 0..1 coef
+	function toUnit (value) {
+		return value > 0 ? 1 : value < 0 ? -1 : 0;
+	}
+
+	//return coords from the direction
+	function getDirectionCoords (direction, rect, size) {
+		var coords = [0,0];
+
+		switch (direction) {
+			case 'top':
+				coords[0] = rect.left + rect.width/2 - size.left;
+				coords[1] = rect.top - size.top;
+				break;
+			case 'bottom':
+				coords[0] = rect.left + rect.width/2 - size.left;
+				coords[1] = rect.bottom - size.top;
+				break;
+			case 'left':
+				coords[0] = rect.left - size.left;
+				coords[1] = rect.top + rect.height/2 - size.top;
+				break;
+			case 'right':
+				coords[0] = rect.right - size.left;
+				coords[1] = rect.top + rect.height/2 - size.top;
+				break;
+		}
+
+		return coords;
+	}
+
 	//return absolute offset for a target
-	function getCoords (target) {
+	function getOffset (target) {
 		if (target instanceof Array) {
-			return target;
+			return Rect(target[0], target[1], target[2], target[3]);
 		}
 
 		if (typeof target === 'string') {
 			//`100, 200` - coords relative to offsetParent
 			if ((coords = target.split(/\s*,\s*/)).length === 2) {
-				return [parseInt(coords[0]), parseInt(coords[1])];
+				return Rect(parseInt(coords[0]), parseInt(coords[1]));
 			}
 
 			//`.selector` - calc selected target coords relative to offset parent
@@ -177,17 +301,10 @@ Connector.prototype.update = function () {
 		}
 
 		if (!target) {
-			return [0, 0];
+			return Rect();
 		}
 
-		var targetOffset = offset(target);
-		var parent = self.element.offsetParent || self.element.parentNode;
-		var parentOffset = offset(parent);
-
-		return [
-			targetOffset.left + targetOffset.width/2 - parentOffset.left,
-			targetOffset.top + targetOffset.height/2 - parentOffset.top
-		];
+		return offset(target);
 	}
 };
 
