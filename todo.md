@@ -4,6 +4,7 @@
 * divert repeating connections (same targets)
 * Detect proper target on click on multiple connectors
 * Implement elbow-connector, avoiding target intersection
+* Manage busy spots so to avoid crowding inputs in ine point.
 
 * channels?
 * swap channels?

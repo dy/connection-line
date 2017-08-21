@@ -1,6 +1,9 @@
 connection-line {
 	position: absolute;
 	pointer-events: none;
+	touch-callout: none;
+	-webkit-user-select: none;
+	user-select: none;
 }
 connection-line svg {
 	display: block;
@@ -13,6 +16,9 @@ connection-line svg {
 	min-width: 20px;
 	font-size: 20px;
 	cursor: default;
+	touch-callout: none;
+	-webkit-user-select: none;
+	user-select: none;
 }
 .connection-line-end {
 	transform-origin: center center;
