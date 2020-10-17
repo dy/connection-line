@@ -52,3 +52,7 @@ window.addEventListener('resize', function () {
 	connector.update();
 });
 ```
+
+## Alternatives
+
+* [perfect-arrows](https://github.com/steveruizok/perfect-arrows)
